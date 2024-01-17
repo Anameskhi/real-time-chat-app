@@ -1,45 +1,43 @@
-version: "3.8"
+version: "3"
 
 services:
   api:
     build:
       dockerfile: Dockerfile
       context: ./api
-      target: development
     volumes:
-      - ./api:/home/ana/real-time-chat-app/api
-      - /home/ana/real-time-chat-app/api/node_modules
+      - ./api:/usr/src/app
+      - /usr/src/app/node_modules
     command: npm run start:dev
     depends_on:
       - postgres
     environment:
       DATABASE_URL: postgres://user:password@postgres:5432/db
       NODE_ENV: development
+      JWT_SECRET: hard_to_guess_secret_123
       PORT: 3000
     ports:
-      - 3001:3000
+      - 3000:3000
       - 9229:9229
 
   frontend:
     build:
       dockerfile: Dockerfile
       context: ./frontend
-      target: development
     command: npm run start
     volumes:
-      - ./frontend:/home/ana/real-time-chat-app/frontend
-      - /home/ana/real-time-chat-app/frontend/node_modules
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
-      - 4201:4200
-    links:
-      - api
+      - 4200:4200
+
 
   postgres:
-    image: postgres:10.4
+    image: postgres:14.9
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     ports:
       - 35000:5432
 
@@ -48,7 +46,11 @@ services:
     depends_on:
       - postgres
     environment:
-      PGADMIN_DEFAULT_EMAIL: a.meskhii@gmail.com
+      PGADMIN_DEFAULT_EMAIL: user@gmail.com
       PGADMIN_DEFAULT_PASSWORD: password
     ports:
       - 5050:80
+
+
+
+      
